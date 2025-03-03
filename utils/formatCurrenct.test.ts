@@ -1,6 +1,6 @@
 import { formatCurrency } from './formatCurrency';
 
-describe('formatCurrency', () => {
+describe('For currency formatting it ', () => {
   it('should format the given amount with default decimal places', () => {
     const amount = 1234.56;
     const expected = '£1,234.56';

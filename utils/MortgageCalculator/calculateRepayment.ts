@@ -1,11 +1,11 @@
 /**
- * Calculates the monthly mortgage payment.
+ * Calculates the monthly mortgage payment
  *
- * @param propertyPrice - The price of the property.
- * @param deposit - The deposit amount.
- * @param annualInterestRate - The annual interest rate.
- * @param mortgageTermInYears - The mortgage term in years.
- * @returns The monthly mortgage payment.
+ * @param propertyPrice - The price of the property
+ * @param deposit - The deposit amount
+ * @param annualInterestRate - The annual interest rate
+ * @param mortgageTermInYears - The mortgage term in years
+ * @returns The monthly mortgage payment
  */
 export function calculateMonthlyPayment(
       propertyPrice: number,
@@ -31,11 +31,11 @@ export function calculateMonthlyPayment(
 }
 
 /**
- * Calculates the total repayment amount over the entire mortgage term.
+ * Calculates the total repayment amount over the entire mortgage term
  *
- * @param monthlyPayment - The monthly mortgage payment.
- * @param mortgageTermInYears - The mortgage term in years.
- * @returns The total repayment amount.
+ * @param monthlyPayment - The monthly mortgage payment
+ * @param mortgageTermInYears - The mortgage term in years
+ * @returns The total repayment amount
  */
 export function calculateTotalRepayment(
   monthlyPayment: number,
@@ -45,11 +45,11 @@ export function calculateTotalRepayment(
 }
 
 /**
- * Calculates the capital (loan amount).
+ * Calculates the capital - the loan amount.
  *
- * @param propertyPrice - The price of the property.
- * @param deposit - The deposit amount.
- * @returns The capital (loan amount).
+ * @param propertyPrice - The price of the property
+ * @param deposit - The deposit amount
+ * @returns The capital (loan amount)
  */
 export function calculateCapital(
   propertyPrice: number,
@@ -61,9 +61,9 @@ export function calculateCapital(
 /**
  * Calculates the total interest paid over the mortgage term.
  *
- * @param totalRepayment - The total repayment amount.
- * @param capital - The capital (loan amount).
- * @returns The total interest paid.
+ * @param totalRepayment - The total repayment amount
+ * @param capital - The capital (loan amount)
+ * @returns The total interest paid
  */
 export function calculateInterest(
   totalRepayment: number,
@@ -73,13 +73,13 @@ export function calculateInterest(
 }
 
 /**
- * Calculates the monthly payment for the affordability check (interest rate + 3%).
+ * Calculates the monthly payment for the affordability check (including 3% interest rate).
  *
- * @param propertyPrice - The price of the property.
- * @param deposit - The deposit amount.
- * @param annualInterestRate - The annual interest rate.
- * @param mortgageTermInYears - The mortgage term in years.
- * @returns The monthly payment for the affordability check.
+ * @param propertyPrice - The price of the property
+ * @param deposit - The deposit amount
+ * @param annualInterestRate - The annual interest rate
+ * @param mortgageTermInYears - The mortgage term in years
+ * @returns The monthly payment for the affordability check
  */
 export function calculateAffordabilityCheck(
   propertyPrice: number,
@@ -98,11 +98,11 @@ export function calculateAffordabilityCheck(
 /**
  * Calculates the remaining mortgage balance at the end of each year.
  *
- * @param propertyPrice - The price of the property.
- * @param deposit - The deposit amount.
- * @param annualInterestRate - The annual interest rate.
- * @param mortgageTermInYears - The mortgage term in years.
- * @returns An array of remaining balances for each year.
+ * @param propertyPrice - The price of the property
+ * @param deposit - The deposit amount  
+ * @param annualInterestRate - The annual interest rate
+ * @param mortgageTermInYears - The mortgage term in years
+ * @returns An array of remaining balances for each year
  */
 export function calculateYearlyBreakdown(
   propertyPrice: number,
@@ -144,9 +144,6 @@ export function calculateYearlyBreakdown(
   return yearlyBreakdown;
 }
 
-/**
- * Interface for mortgage calculation results
- */
 export interface MortgageCalculationResults {
   monthlyPayment: number;
   totalRepayment: number;
@@ -157,13 +154,13 @@ export interface MortgageCalculationResults {
 }
 
 /**
- * Calculates all mortgage-related values.
+ * Calculates all mortgage values.
  *
- * @param propertyPrice - The price of the property.
- * @param deposit - The deposit amount.
- * @param annualInterestRate - The annual interest rate.
- * @param mortgageTermInYears - The mortgage term in years.
- * @returns All mortgage calculation results.
+ * @param propertyPrice - The price of the property
+ * @param deposit - The deposit amount
+ * @param annualInterestRate - The annual interest rate
+ * @param mortgageTermInYears - The mortgage term in years
+ * @returns All mortgage calculation results
  */
 export function calculateMortgage(
   propertyPrice: number,

@@ -1,9 +1,9 @@
-import { fetchLatestInterestRate, formatDateForBOE } from "./fetchInterestRate";
+import { fetchLatestInterestRate, formatDateForBOE } from "../../utils/MortgageCalculator/fetchInterestRate";
 
 // Mock the global fetch function
 global.fetch = jest.fn();
 
-describe("fetchLatestInterestRate", () => {
+describe("For fetching the latest interest rate it ", () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
@@ -74,7 +74,7 @@ Date,Value
   });
 });
 
-describe("formatDateForBOE", () => {
+describe("For formatting the date for the Bank of England API it ", () => {
   test("should format the date correctly for the Bank of England API", () => {
     const date = new Date(2024, 0, 15); // January 15, 2024
     const result = formatDateForBOE(date);
