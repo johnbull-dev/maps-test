@@ -30,6 +30,12 @@ jobs:
     - name: Install Playwright browsers
       run: npx playwright install
 
+    - name: Start the application
+      run: npm start &
+    
+    - name: Wait for the application to be ready
+      run: npx wait-on http://localhost:3000
+
     - name: Run Jest tests
       run: npm test
 
