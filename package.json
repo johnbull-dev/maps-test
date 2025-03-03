@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsc && jest --watch",
+    "test": "tsc && jest",
     "playwright:test": "playwright test",
     "playwright:ui": "playwright test --ui"
   },
