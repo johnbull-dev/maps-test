@@ -11,13 +11,14 @@ import Head from "next/head";
 import { GetServerSideProps } from "next";
 
 import { formatCurrency } from "../utils/formatCurrency";
-import { 
-  calculateMortgage, 
-  MortgageCalculationResults 
+import {
+  calculateMortgage,
+  MortgageCalculationResults
 } from "../utils/MortgageCalculator/calculateRepayment";
 import { fetchLatestInterestRate } from "../utils/MortgageCalculator/fetchInterestRate";
 
 // Default values for the calculator -- assigned to placeholders in HTML
+// Ideally these would be assigned to environment variables IRL
 const DEFAULT_VALUES = {
   propertyPrice: 100000,
   deposit: 5000,
@@ -25,6 +26,7 @@ const DEFAULT_VALUES = {
   annualInterestRate: 5.25
 };
 
+// Setting all the form fields to be empty by default.
 interface FormInputs {
   propertyPrice: number | "";
   deposit: number | "";
@@ -39,17 +41,17 @@ interface MortgageCalculatorProps {
 }
 
 export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = async (context) => {
-  // Get the latest interest rate from BoE
+  // Get the latest interest rate from the BoE. If it fails, set the default interest rate and throw error to console.
+  // Ideally we would log errors to a logging service and monitor the error rate.
   let latestInterestRate: number | null = null;
   try {
     latestInterestRate = await fetchLatestInterestRate();
   } catch (error) {
     console.error("Failed to fetch latest interest rate:", error);
   }
-  
-  // Check if the form was submitted (POST request)
+
   if (context.req.method === "POST") {
-    // If the form was submitted, parse the form data - look for parameters in the URL
+    // checking if the form was submitted. If so, parse the form data.
     const formData = await new Promise<FormInputs>((resolve) => {
       let data = "";
       context.req.on("data", (chunk) => {
@@ -60,10 +62,10 @@ export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = a
         const propertyPrice = parsedData.get("price") ? Number(parsedData.get("price")) : "";
         const deposit = parsedData.get("deposit") ? Number(parsedData.get("deposit")) : "";
         const mortgageTermInYears = parsedData.get("term") ? Number(parsedData.get("term")) : "";
-        const annualInterestRate = parsedData.get("interest") 
-          ? Number(parsedData.get("interest")) 
+        const annualInterestRate = parsedData.get("interest")
+          ? Number(parsedData.get("interest"))
           : (latestInterestRate !== null ? latestInterestRate : DEFAULT_VALUES.annualInterestRate);
-        
+
         resolve({
           propertyPrice,
           deposit,
@@ -72,14 +74,13 @@ export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = a
         });
       });
     });
-    
+
     // Only calculate results if all required values are provided
-    // Extra - put required error handling here
     let results = null;
     if (
-      formData.propertyPrice !== "" && 
-      formData.deposit !== "" && 
-      formData.mortgageTermInYears !== "" && 
+      formData.propertyPrice !== "" &&
+      formData.deposit !== "" &&
+      formData.mortgageTermInYears !== "" &&
       formData.annualInterestRate !== ""
     ) {
       results = calculateMortgage(
@@ -89,7 +90,7 @@ export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = a
         formData.mortgageTermInYears as number
       );
     }
-    
+
     return {
       props: {
         initialValues: formData,
@@ -98,7 +99,7 @@ export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = a
       },
     };
   }
-  
+
   // If not a POST request, return empty form values with the latest interest rate
   return {
     props: {
@@ -114,72 +115,64 @@ export const getServerSideProps: GetServerSideProps<MortgageCalculatorProps> = a
   };
 };
 
-export default function MortgageCalculator({ 
-  initialValues, 
+export default function MortgageCalculator({
+  initialValues,
   initialResults,
-  latestInterestRate 
+  latestInterestRate
 }: MortgageCalculatorProps) {
-  // Form input states
+
   const [propertyPrice, setPropertyPrice] = useState<number | "">(initialValues.propertyPrice);
   const [deposit, setDeposit] = useState<number | "">(initialValues.deposit);
   const [mortgageTermInYears, setMortgageTermInYears] = useState<number | "">(initialValues.mortgageTermInYears);
   const [annualInterestRate, setAnnualInterestRate] = useState<number | "">(initialValues.annualInterestRate);
-  
-  // Results state
+
   const [results, setResults] = useState<MortgageCalculationResults | null>(initialResults);
-  
-  // Loading state for fetching interest rate
   const [isLoadingInterestRate, setIsLoadingInterestRate] = useState<boolean>(false);
-  
-  // Flag to check if JavaScript is enabled
   const [isJsEnabled, setIsJsEnabled] = useState<boolean>(false);
-  
-  // Set JavaScript enabled flag on component mount
+
   useEffect(() => {
     setIsJsEnabled(true);
   }, []);
-  
-  // Fetch the latest interest rate on component mount if not already provided
+
   useEffect(() => {
     if (latestInterestRate !== null) {
       return;
     }
-    
+
     const getLatestInterestRate = async () => {
       setIsLoadingInterestRate(true);
       try {
         const rate = await fetchLatestInterestRate();
-        // Automatically set the interest rate in the form
         setAnnualInterestRate(rate);
       } catch (error) {
         console.error("Failed to fetch latest interest rate:", error);
+
         // Set default interest rate if fetching fails
         setAnnualInterestRate(DEFAULT_VALUES.annualInterestRate);
       } finally {
         setIsLoadingInterestRate(false);
       }
     };
-    
+
     getLatestInterestRate();
   }, [latestInterestRate]);
-  
-  // Handle form submission
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    // Only prevent default if JavaScript is enabled
+    // Bonus Option: Prevent default if JavaScript is disabled.
+    // Check if JavaScript is enabled. If true then calculate the results client side.
     if (isJsEnabled) {
       e.preventDefault();
       calculateResults();
     }
     // Otherwise, let the form submit normally for server-side processing
   };
-  
-  // Calculate mortgage results
+
   const calculateResults = () => {
     // Only calculate if all required values are provided
     if (
-      propertyPrice !== "" && 
-      deposit !== "" && 
-      mortgageTermInYears !== "" && 
+      propertyPrice !== "" &&
+      deposit !== "" &&
+      mortgageTermInYears !== "" &&
       annualInterestRate !== ""
     ) {
       const calculationResults = calculateMortgage(
@@ -188,18 +181,18 @@ export default function MortgageCalculator({
         annualInterestRate,
         mortgageTermInYears
       );
-      
+
       setResults(calculationResults);
     }
   };
-  
+
   return (
     <Container>
       <Head>
         <title>Mortgage Calculator Test</title>
       </Head>
       <Row className="gap-x-10 pt-3">
-        <Col className="border-r" md="auto">
+        <Col className="border-r pb-4" md="auto">
           <Form onSubmit={handleSubmit} method="POST" action="/">
             <Form.Label htmlFor="price">Property Price</Form.Label>
             <InputGroup className="mb-3">
@@ -255,8 +248,8 @@ export default function MortgageCalculator({
             </Form.Label>
             <InputGroup className="mb-3">
               <Form.Control
-                id="interest"
-                name="interest"
+                id="interest-rate"
+                name="interest-rate"
                 type="number"
                 step="any"
                 className="no-spinner"

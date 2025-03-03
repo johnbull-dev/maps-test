@@ -64,7 +64,7 @@ describe("For calculating the affordability check it ", () => {
       annualInterestRate,
       mortgageTermInYears
     );
-    // This should be the monthly payment with interest rate + 3%
+    
     const expectedMonthlyPayment = calculateMonthlyPayment(
       propertyPrice,
       deposit,
@@ -88,18 +88,14 @@ describe("For calculating the yearly breakdown it ", () => {
       mortgageTermInYears
     );
     
-    // Check that we have the correct number of years
     expect(actual.length).toBe(mortgageTermInYears);
     
-    // Check that the first year has a reasonable remaining debt
     expect(actual[0].year).toBe(1);
     expect(actual[0].remainingDebt).toBeLessThan(95000);
     
-    // Check that the last year has a remaining debt close to zero
     expect(actual[mortgageTermInYears - 1].year).toBe(mortgageTermInYears);
     expect(actual[mortgageTermInYears - 1].remainingDebt).toBeCloseTo(0, 0);
     
-    // Check that the debt decreases each year
     for (let i = 1; i < actual.length; i++) {
       expect(actual[i].remainingDebt).toBeLessThan(actual[i - 1].remainingDebt);
     }
@@ -120,7 +116,6 @@ describe("For calculating a mortgage it ", () => {
       mortgageTermInYears
     );
     
-    // Check that all values are calculated correctly
     expect(actual.monthlyPayment).toBeCloseTo(763.68, 2);
     expect(actual.totalRepayment).toBeCloseTo(137463.09, 2);
     expect(actual.capital).toBe(95000);
