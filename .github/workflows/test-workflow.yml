@@ -28,7 +28,7 @@ jobs:
       run: npx playwright install
 
     - name: Build the application
-      run: npm build
+      run: npm run build
 
     - name: Start the application
       run: npm start &
