@@ -8,10 +8,10 @@ const createJestConfig = jestConfig({
 const config = {
   collectCoverage: false,
   moduleNameMapper: {
-    // Only needed for what is not covered by tsconfig's `paths` option
     "^utils/(.*)$": "<rootDir>/utils/$1",
   },
   testEnvironment: "jsdom",
+  testPathIgnorePatterns: ['<rootDir>/__e2e__'], 
 };
 
 export default createJestConfig(config);
